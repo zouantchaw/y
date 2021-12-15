@@ -20,3 +20,12 @@ export async function getPosts() {
     })
   );
 }
+
+export async function getPost(slug) {
+  const filepath = path.join(postsPath, slug + ".md");
+  const file = await fs.readFile(filepath);
+  const { attributes } = parseFrontMatter(file.toString());
+  invariant(attributes, `Post ${filepath} is missing attributes`);
+
+  return { slug, title: attributes.title };
+}

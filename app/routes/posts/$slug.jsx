@@ -1,15 +1,17 @@
 import { useLoaderData } from "remix";
+import { getPost } from "../../post";
+import invariant from "tiny-invariant";
 
 export const loader = async ({ params }) => {
-  return params.slug;
+  return getPost(params.slug);
 }
 
 export default function PostSlug() {
-  const slug = useLoaderData();
+  const post = useLoaderData();
   console.log("here")
   return (
     <div>
-      <h1>Some Post: {slug}</h1>
+      <h1>{post.title}</h1>
     </div>
   );
 }
