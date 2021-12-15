@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs/promises";
 import parseFrontMatter from "front-matter";
 import invariant from "tiny-invariant";
+import { marked } from "marked";
 
 const postsPath = path.join(__dirname, "..", "posts")
 
@@ -24,8 +25,9 @@ export async function getPosts() {
 export async function getPost(slug) {
   const filepath = path.join(postsPath, slug + ".md");
   const file = await fs.readFile(filepath);
-  const { attributes } = parseFrontMatter(file.toString());
+  const { attributes, body } = parseFrontMatter(file.toString());
   invariant(attributes, `Post ${filepath} is missing attributes`);
 
-  return { slug, title: attributes.title };
+  const html = marked(body)
+  return { slug, html, title: attributes.title };
 }
