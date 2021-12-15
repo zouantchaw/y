@@ -12,7 +12,7 @@ export async function getPosts() {
       const file = await fs.readFile(path.join(postsPath, filename));
 
       const { attributes } = parseFrontMatter(file.toString());
-      invariant(isValidPostAttributes(attributes), `${filename} has bad meta data!`)
+      invariant(attributes, `${filename} has bad meta data!`)
       return {
         slug: filename.replace(/\.md$/, ""),
         title: attributes.title
