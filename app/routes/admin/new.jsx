@@ -8,6 +8,15 @@ export const action = async ({ request }) => {
   const slug = formData.get("slug");
   const markdown = formData.get("markdown");
 
+  const errors = {};
+  if (!title) errors.title = true;
+  if (!slug) errors.slug = true;
+  if (!markdown) errors.markdown = true;
+
+  if (Object.keys(errors).length) {
+    return errors;
+  }
+
   await createPost({ title, slug, markdown });
 
   return redirect("/admin")
