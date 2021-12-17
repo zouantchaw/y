@@ -1,7 +1,10 @@
-import { Form, redirect, useActionData } from "remix"
-import { createPost } from "../../post"
+import { Form, redirect, useActionData, useTransition } from "remix";
+import { createPost } from "../../post";
 
 export const action = async ({ request }) => {
+  // simulate fake delay
+  await new Promise((res) => setTimeout(res, 1000));
+
   const formData = await request.formData();
 
   const title = formData.get("title");
@@ -19,26 +22,25 @@ export const action = async ({ request }) => {
 
   await createPost({ title, slug, markdown });
 
-  return redirect("/admin")
-}
+  return redirect("/admin");
+};
 
 export default function NewPost() {
   // errors are available to the component via useActionData
-  const errors = useActionData()
+  const errors = useActionData();
+  const transition = useTransition()
 
-  return(
+  return (
     <Form method="post">
       <p>
         <label>
-          Post Title:{" "}
-          {errors?.title && <em>Title is required</em>}
+          Post Title: {errors?.title && <em>Title is required</em>}
           <input type="text" name="title" />
         </label>
       </p>
       <p>
         <label>
-          Post Slug: {" "}
-          {errors?.slug && <em>Slug is required</em>}
+          Post Slug: {errors?.slug && <em>Slug is required</em>}
           <input type="text" name="slug" />
         </label>
       </p>
@@ -49,8 +51,10 @@ export default function NewPost() {
         <textarea id="markdown" rows={20} name="markdown" />
       </p>
       <p>
-        <button type="submit">Create Post</button>
+        <button type="submit">
+          {transition.submission ? "Creating..." : "Create Post"}
+        </button>
       </p>
     </Form>
-  )
+  );
 }
